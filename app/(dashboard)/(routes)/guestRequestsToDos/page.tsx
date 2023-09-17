@@ -30,7 +30,7 @@ type CardProps = React.ComponentProps<typeof Card>;
 
 export default function CardDemo({ className, ...props }: CardProps) {
   return (
-    <>
+    <div>
       <Card className={cn("w-full", className)} {...props}>
         <CardContent className="grid gap-4">
           {/* This map function will iterate over the data fetched from your database. */}
@@ -53,6 +53,6 @@ export default function CardDemo({ className, ...props }: CardProps) {
           ))}
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 }
