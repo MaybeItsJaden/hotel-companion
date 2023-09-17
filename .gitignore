@@ -37,5 +37,8 @@ next-env.d.ts
 # keys
 .env
 
-# prisma schema
-prisma/schema.prisma
+# example env
+.env.example
+
+# Ignore package-lock.json if you are using yarn
+# package-lock.json
