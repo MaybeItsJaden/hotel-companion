@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 // Function for copying text to clipboard
-const copyToClipboard = (text) => {
+const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text).then(
     () => {
       // Successful copy
