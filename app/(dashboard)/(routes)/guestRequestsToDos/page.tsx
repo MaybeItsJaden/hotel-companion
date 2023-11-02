@@ -1,58 +1,39 @@
-import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
+import React from "react";
+import Link from "next/link";
+import { prisma } from "@/lib/db";
+import { TodoItem } from "@/components/TodoItem";
 
-// This is a placeholder, replace it with your actual data fetched from Prisma and MongoDB
-// You would typically use a function like `getServerSideProps` or `getStaticProps` 
-// to fetch data from your MongoDB database through Prisma.
-const todos = [
-  {
-    createdAt: "10:00 AM",
-    guestName: "Doe, J",
-    roomNumber: "101",
-    title: "Room Service",
-    description: "Needs extra towels",
-    completed: false,
-  },
-  
-  // Add more todos here
-];
+function getTodos() {
+  return prisma.todo.findMany()
+}
 
-type CardProps = React.ComponentProps<typeof Card>;
+async function toggleTodo(id: string, complete: boolean) {
+  "use server"
 
-export default function CardDemo({ className, ...props }: CardProps) {
+  await prisma.todo.update({ where: { id }, data: { complete } })
+}
+
+
+export default async function TodoList() {
+  const todos = await getTodos()
+
   return (
-    <div>
-      <Card className={cn("w-full", className)} {...props}>
-        <CardContent className="grid gap-4">
-          {/* This map function will iterate over the data fetched from your database. */}
-          {todos.map((todo, index) => (
-            <div key={index} className="flex items-center space-x-4 rounded-md border p-4">
-              <div className="flex-1 space-y-1">
-                {/* Display the time the todo was created. This will be fetched from your database. */}
-                <p className="text-sm font-medium leading-none">{todo.createdAt}</p>
-                {/* Display the guest's name. This will be fetched from your database. */}
-                <p className="text-sm">{todo.guestName}</p>
-                {/* Display the room number. This will be fetched from your database. */}
-                <p className="text-sm">{todo.roomNumber}</p>
-                {/* Display the todo description. This will be fetched from your database. */}
-                <p className="text-sm text-muted-foreground">{todo.description}</p>
-              </div>
-              {/* This switch indicates whether the todo is completed or not. 
-                  You would typically update this in your database when it changes. */}
-              <Switch checked={todo.completed} />
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      <header className="flex justify-center mb-4">
+        <h1 className="text-2xl md:text-4xl font-bold text-center">Todos</h1>
+        <Link
+          className="border border-slate-300 text-slate-300 px-2 py-1 rounded hover:bg-slate-700 focus-within:bg-slate-700 outline-none"
+          href="/newTodo"
+        >
+          New
+        </Link>
+      </header>
+      <ul className="pl-4">
+        {todos.map(todo => (
+          <TodoItem key={todo.id} {...todo} toggleTodo={toggleTodo} />
+        ))}
+      </ul>
+    </>
   );
 }
+ 
